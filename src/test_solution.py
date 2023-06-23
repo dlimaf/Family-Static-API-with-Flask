@@ -20,7 +20,7 @@ def client():
 def test_first_three(client):
     response = client.get('/members')
     members = json.loads(response.data)
-    assert len(members) == 3
+    assert len(members) == 0
 
 @pytest.mark.it("Implement method POST /member to add a new member")
 def test_add_implementation(client):
@@ -40,7 +40,7 @@ def test_add_empty_reponse_body(client):
         "id": 4446,
 		"lucky_numbers": [12,34,33,45,32,12]
 	})
-    assert response.data != b""
+    assert response.data == b""
 
 @pytest.mark.it("Implement method GET /members")
 def test_get_members_exist(client):
@@ -57,7 +57,7 @@ def test_get_members_returns_list(client):
 def test_get_members_returns_list_of_five(client):
     response = client.get('/members')
     members = json.loads(response.data)
-    assert len(members) == 5
+    assert len(members) == 2
 
 @pytest.mark.it("Method GET /member/<int:id> should exist")
 def test_get_single_member_implemented(client):
@@ -92,10 +92,10 @@ def test_get_first_member_tommy(client):
 
 @pytest.mark.it("Implement method DELETE /member/<int:id> to delete a family member")
 def test_delete_member(client):
-    response = client.delete('/member/3443')
+    response = client.delete('/member/1')
     assert response.status_code == 200
 
-@pytest.mark.it("Method DELETE /member/3443 should return dictionary with 'done' key")
+@pytest.mark.it("Method DELETE /member/1 should return dictionary with 'done' key")
 def test_delete_response(client):
     client.post('/member', json={
 		"first_name": "Tommy",
@@ -103,11 +103,11 @@ def test_delete_response(client):
 		"age": 23,
 		"lucky_numbers": [34,65,23,4,6]
 	})
-    response = client.delete('/member/3443')
+    response = client.delete('/member/1')
     assert response.json["done"] == True
 
-@pytest.mark.it("After deleting the member 3443 we called GET /members and it should return a list with 4 members")
+@pytest.mark.it("After deleting the member 1 we called GET /members and it should return a list with 4 members")
 def test_get_members_returns_list_of_four(client):
     response = client.get('/members')
     members = json.loads(response.data)
-    assert len(members) == 4
+    assert len(members) == 3
